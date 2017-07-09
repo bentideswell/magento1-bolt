@@ -1,0 +1,177 @@
+<?php
+/**
+ *
+ */
+?>
+<div id="bolt-cache" style="display: none;">
+	<div class="bolt-shadow"></div>
+	<div class="bolt-inner">
+		<div class="content-header skip-header">
+			<table cellspacing="0">
+				<tbody>
+					<tr>
+						<td>
+							<h3 style="line-height: 40px; "><?php echo $this->__('Bolt Full Page Cache v%s', $this->getModuleVersion()) ?></h3>
+						</td>
+						<td class="form-buttons">
+							<a href="http://fishpig.co.uk/magento/extensions/full-page-cache/?utm_source=Fishpig_Bolt&utm_medium=Quick%20Launch" target="_blank">
+								<img src="https://s3.amazonaws.com/FishPig-Extend/image/fishpig-logo-100x65-black.png" alt="View Bolt at FishPig.co.uk" style="max-height: 40px;"/>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<ul class="tabs-horiz" id="bolt_tabs">
+			<li>
+				<a class="tab-item-link" href="#" id="bolt_tabs_quickrefresh">
+					<span><?php echo $this->__('Quick Refresh') ?></span>
+				</a>
+			</li>
+			<li>
+				<a class="tab-item-link" href="<?php echo $this->getUrl('adminhtml/system_config/edit/section/bolt/') ?>">
+					<span><?php echo $this->__('Configuration') ?></span>
+				</a>
+			</li>
+			<li>
+				<a class="tab-item-link" href="<?php echo $this->getUrl('adminhtml/cache') ?>">
+					<span><?php echo $this->__('Cache Management') ?></span>
+				</a>
+			</li>
+		</ul>
+		<div id="bolt_tabs_content">
+			<div id="bolt_tabs_quickrefresh_content">
+				<form id="bolt-cache-form" method="post" action="<?php echo $this->getFormActionUrl() ?>">
+					<div class="no-display">
+						<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+						<?php if (Mage::app()->isSingleStoreMode()): ?>
+							<input type="hidden" name="bolt[store_id][]" value="<?php echo $this->getDefaultStoreId() ?>" />
+						<?php endif; ?>
+					</div>
+					<table class="form-list">
+						<tbody>
+							<tr>
+								<td class="label">
+									<label for="bolt_uri"><?php echo $this->__('URL') ?> <span class="required">*</span></label>
+								</td>
+								<td class="value">
+									<input type="text" class="required-entry input-text" value="" name="bolt[uri]" id="bolt_uri" placeholder="<?php echo $this->__('eg. /mens/shoes/nike-air.html') ?>" />
+								</td>
+							</tr>
+							<tr>
+								<td class="label">
+									<label for="bolt_subpages"><?php echo $this->__('Include Sub-Pages') ?> <span class="required">*</span></label>
+								</td>
+								<td class="value">
+									<select name="bolt[subpages]" id="bolt_subpages" class="select required-entry">
+										<?php if (false && $this->isMemcache()): ?>
+											<option value="0"><?php echo $this->__(' No - not available with Memcache') ?></option>
+										<?php else: ?>
+											<option value="0"><?php echo $this->__('No') ?></option>
+											<option value="1" selected="selected"><?php echo $this->__('Yes') ?></option>
+										<?php endif; ?>
+									</select>
+								</td>
+							</tr>
+							<?php if (!Mage::app()->isSingleStoreMode()): ?>
+								<tr>
+									<td class="label">
+										<label for="bolt_store"><?php echo $this->__('Store') ?> <span class="required">*</span></label>
+									</td>
+									<td class="value">
+										<?php if ($websites = $this->getWebsites()): ?>
+											<select name="bolt[store_id][]" id="bolt_store_id" multiple="multiple" class="select multiselect required-entry" size="<?php echo $this->getStoreElementSize() ?>">
+												<?php foreach ($websites as $website): ?>
+													<?php $showWebsite = false; ?>
+													<?php foreach ($website->getGroups() as $group): ?>
+														<?php $showGroup = false; ?>
+															<?php foreach ($this->getStores($group) as $store): ?>
+																<?php if ($showWebsite == false): ?>
+																	<?php $showWebsite = true; ?>
+																	<optgroup label="<?php echo $this->escapeHtml($website->getName()) ?>"></optgroup>
+																<?php endif; ?>
+																<?php if ($showGroup == false): ?>
+																	<?php $showGroup = true; ?>
+																	<optgroup label="&nbsp;&nbsp;&nbsp;<?php echo $this->escapeHtml($group->getName()) ?>">
+																<?php endif; ?>
+																<option value="<?php echo $this->escapeHtml($store->getId()) ?>"<?php if($this->getStoreId() == $store->getId()): ?> selected="selected"<?php endif; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->escapeHtml($store->getName()) ?></option>
+															<?php endforeach; ?>
+														<?php if ($showGroup): ?>
+															</optgroup>
+														<?php endif; ?>
+													<?php endforeach; ?>
+												<?php endforeach; ?>
+											</select>
+										<?php endif; ?>
+									</td>
+								</tr>
+							<?php endif; ?>
+							<tr>
+								<td class="label">&nbsp;</td>
+								<td class="value">
+									<button type="submit" class="button submit save"><span><?php echo $this->__('Refresh') ?></span></button>
+									<span>&nbsp; &nbsp;</span> <a href="#close" class="bolt-close"><?php echo $this->__('Close') ?></a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+		</div>
+		<?php echo Mage::helper('bolt/license')->getImageJs('bolt.png', 'a.bolt') ?>
+	</div>
+</div>
+<style>
+#bolt-cache { position: absolute; top: 0; left: 0; z-index: 300; width: 100%; height: 100%; }
+#bolt-cache .bolt-shadow { position: fixed; top: 0; left: 0; z-index: 301; width: 100%; height: 100%; background: #000; }
+#bolt-cache .bolt-inner { background: #fff; position: relative; z-index: 302; max-width: 500px; border: 4px solid #ccc; margin: 2% auto 0; padding: 10px 20px; }
+</style>
+<script type="text/javascript">
+//<![CDATA[
+	(function() {
+		var _launcher = new Element('a', {href: 'bolt', class: 'bolt'}).update('Bolt');
+		var _target = $$('.header-right p.super')
+		var _wrapper = $('bolt-cache');
+		var _shadow = _wrapper.select('.bolt-shadow').first();
+		var _inner = _wrapper.select('.bolt-inner').first();
+		var _form = new varienForm('bolt-cache-form');
+		
+		if (_target) {
+			_target.first()
+				.insert({top: new Element('span', {class: 'separator'}).update('|')})
+				.insert({top: _launcher});
+		}
+
+		var _bolt_close = function(event) {
+			if (event) {
+				Event.stop(event);
+			}
+			
+			$('bolt-cache').hide();
+		}
+		
+		var _bolt_open = function(event) {
+			if (event) {
+				Event.stop(event);
+			}
+
+			_shadow.hide();
+			_inner.hide();
+			_wrapper.show();
+			
+			Effect.Appear(_shadow, {
+				to: 0.75,
+				duration: 0.2,
+				afterFinish: function() {
+					Effect.Appear(_inner, {to: 1, duration: 0.3});
+				}
+			});
+		}
+		
+		Event.observe(_launcher, 'click', _bolt_open.bindAsEventListener(this));
+		$$('.bolt-close,.bolt-shadow').invoke('observe', 'click', _bolt_close.bindAsEventListener(this));
+
+		new varienTabs('bolt_tabs', 'bolt_tabs_content', 'bolt_tabs_quickrefresh', []);
+	})();
+//]>
+</script>

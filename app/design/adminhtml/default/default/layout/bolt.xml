@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout>
+	<default>
+		<reference name="before_body_end">
+			<block type="bolt/adminhtml_system_cache" name="cache.bolt.quick_launch" as="quickLaunch" template="bolt/quick-launch.phtml" />		
+		</reference>
+	</default>
+</layout>

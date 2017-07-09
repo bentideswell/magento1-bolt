@@ -1,0 +1,147 @@
+<?php
+/**
+ *
+ */
+?>
+<div id="bolt-cache" style="display: none;">
+	<div class="shadow"></div>
+	<div class="inner">
+		<div class="content-header">
+			<table cellspacing="0">
+				<tbody>
+					<tr>
+						<td>
+							<h3><?php echo $this->__('Bolt Cache Management') ?></h3>
+						</td>
+						<td class="form-buttons">&nbsp;</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<form id="bolt-cache-form" method="post" action="<?php echo $this->getFormActionUrl() ?>">
+			<div class="no-display">
+				<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+				<?php if (Mage::app()->isSingleStoreMode()): ?>
+					<input type="hidden" name="bolt[store_id][]" value="<?php echo $this->getDefaultStoreId() ?>" />
+				<?php endif; ?>
+			</div>
+			<table class="form-list">
+				<tbody>
+					<tr>
+						<td class="label">
+							<label for="bolt_uri"><?php echo $this->__('URL') ?> <span class="required">*</span></label>
+						</td>
+						<td class="value">
+							<input type="text" class="required-entry input-text" value="" name="bolt[uri]" id="bolt_uri" placeholder="<?php echo $this->__('eg. /mens/shoes/nike-air.html') ?>" />
+						</td>
+					</tr>
+					<tr>
+						<td class="label">
+							<label for="bolt_subpages"><?php echo $this->__('Include Sub-Pages') ?> <span class="required">*</span></label>
+						</td>
+						<td class="value">
+							<select name="bolt[subpages]" id="bolt_subpages" class="select required-entry">
+								<?php if (false && $this->isMemcache()): ?>
+									<option value="0"><?php echo $this->__(' No - not available with Memcache') ?></option>
+								<?php else: ?>
+									<option value="0"><?php echo $this->__('No') ?></option>
+									<option value="1" selected="selected"><?php echo $this->__('Yes') ?></option>
+								<?php endif; ?>
+							</select>
+						</td>
+					</tr>
+					<?php if (!Mage::app()->isSingleStoreMode()): ?>
+						<tr>
+							<td class="label">
+								<label for="bolt_store"><?php echo $this->__('Store') ?> <span class="required">*</span></label>
+							</td>
+							<td class="value">
+								<?php if ($websites = $this->getWebsites()): ?>
+									<select name="bolt[store_id][]" id="bolt_store_id" multiple="multiple" class="select multiselect required-entry" size="<?php echo $this->getStoreElementSize() ?>">
+										<?php foreach ($websites as $website): ?>
+											<?php $showWebsite = false; ?>
+											<?php foreach ($website->getGroups() as $group): ?>
+												<?php $showGroup = false; ?>
+													<?php foreach ($this->getStores($group) as $store): ?>
+														<?php if ($showWebsite == false): ?>
+															<?php $showWebsite = true; ?>
+															<optgroup label="<?php echo $this->escapeHtml($website->getName()) ?>"></optgroup>
+														<?php endif; ?>
+														<?php if ($showGroup == false): ?>
+															<?php $showGroup = true; ?>
+															<optgroup label="&nbsp;&nbsp;&nbsp;<?php echo $this->escapeHtml($group->getName()) ?>">
+														<?php endif; ?>
+														<option value="<?php echo $this->escapeHtml($store->getId()) ?>"<?php if($this->getStoreId() == $store->getId()): ?> selected="selected"<?php endif; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->escapeHtml($store->getName()) ?></option>
+													<?php endforeach; ?>
+												<?php if ($showGroup): ?>
+													</optgroup>
+												<?php endif; ?>
+											<?php endforeach; ?>
+										<?php endforeach; ?>
+									</select>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endif; ?>
+					<tr>
+						<td class="label">&nbsp;</td>
+						<td class="value">
+							<button type="submit" class="button submit"><span><span><?php echo $this->__('Submit') ?></span></span></button>
+							<span>&nbsp; &nbsp;</span> <a href="#close" class="close"><?php echo $this->__('Close Window') ?></a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+	document.observe('dom:loaded', function() {	
+		var boltButton = new Element('button', {class: 'button scalable add-image'}).update(
+			new Element('span').insert(
+				new Element('span').update('<?php echo $this->__('Manage Bolt Cache') ?>')
+			)
+		);
+
+		$('bolt-cache').select('.close,.shadow').invoke('observe', 'click', function(event) {
+			Event.stop(event);
+			
+			$('bolt-cache').hide()
+		});
+
+		boltButton.observe('click', function(event) {
+			Event.stop(event);
+			
+			var wrapper = $('bolt-cache');
+			var shadow = wrapper.select('.shadow').first();
+			var inner = wrapper.select('.inner').first();
+			
+			shadow.hide();
+			inner.hide();
+			
+			wrapper.show();
+			
+			Effect.Appear(shadow, {
+				to: 0.75,
+				duration: 0.2,
+				afterFinish: function() {
+					Effect.Appear(inner, {
+						to: 1,
+						duration: 0.3
+					});
+				}
+			});
+		});
+
+		$('page:main-container').select('.form-buttons button').first().insert({before: boltButton});
+		
+		new varienForm('bolt-cache-form');
+	});
+//]]>
+</script>
+<style>
+#bolt-cache { position: absolute; top: 0; left: 0; z-index: 300; width: 100%; height: 100%; }
+#bolt-cache .shadow { position: fixed; top: 0; left: 0; z-index: 301; width: 100%; height: 100%; background: #000; }
+#bolt-cache .inner { background: #fff; position: relative; z-index: 302; max-width: 500px; border: 4px solid #ccc; margin: 2% auto 0; padding: 10px 20px; }
+</style>

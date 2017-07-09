@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Fishpig_Bolt>
+			<active>true</active>
+			<codePool>community</codePool>
+		</Fishpig_Bolt>
+	</modules>
+</config>
