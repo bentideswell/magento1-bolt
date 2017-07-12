@@ -82,15 +82,17 @@ class Fishpig_Bolt_Model_Observer_Adminhtml
 			$pluginHelper = Mage::helper('wordpress/plugin');
 			$pluginName = 'fishpig-bolt-fpc-cleaner.php';
 			$wpPath = Mage::helper('wordpress')->getWordPressPath();
-			
+
 			if ($wpPath) {
 				$target = $wpPath . 'wp-content' . DS . 'plugins' . DS . $pluginName;
 				$source = Mage::getModuleDir('', 'Fishpig_Bolt') . DS . 'Wordpress' . DS . 'Plugin' . DS . $pluginName;
 
 				if (!$pluginHelper->install($target, $source, true)) {
+  				/*
 					$html = str_replace('<div id="messages">', '<div id="messages">' . sprintf(self::HTML_MSG_TEMPLATE, 'Unable to install FPC cleaner plugin in WordPress. Copy ' . $source . ' to ' . $target . ' and enable the plugin in the WordPress Admin.'), $response->getBody());
 			
 					$response->setBody($html);
+					*/
 				}
 			}
 		}
@@ -108,7 +110,7 @@ class Fishpig_Bolt_Model_Observer_Adminhtml
 		$helper = Mage::helper('bolt');
 
 		if (!$this->isBolt()) {
-			return $helper->__("bolt.php is not included. Add %s above Mage::run() in index.php.", "@include(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bolt.php');");
+			return $helper->__("bolt.php is not included. Add %s above Mage::run() in index.php.", "include __DIR__ . DS . 'bolt.php';");
 		}
 		
 		if (ini_get('suhosin.session.encrypt')) {
