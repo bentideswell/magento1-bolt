@@ -153,7 +153,7 @@ class Fishpig_Bolt_Model_Observer_Adminhtml
 			if ($_product && !isset(self::$_productIdsFlushed[$_product->getId()])) {
 				self::$_productIdsFlushed[$_product->getId()] = true;
 				
-				$helper = Mage::helper('bolt/cache')->refreshProduct($_product, true);
+				$helper = Mage::helper('bolt/cache_queue')->refreshProduct($_product, true);
 			}
 		}
 
@@ -169,7 +169,7 @@ class Fishpig_Bolt_Model_Observer_Adminhtml
 	public function catalogCategorySaveAfterObserver(Varien_Event_Observer $observer)
 	{
 		if ($this->_initAutoRefresh('catalog_category_save_after')) {
-			$helper = Mage::helper('bolt/cache')->refreshCategory(
+			$helper = Mage::helper('bolt/cache_queue')->refreshCategory(
 				$observer->getEvent()->getCategory()
 			);
 		}
@@ -191,7 +191,7 @@ class Fishpig_Bolt_Model_Observer_Adminhtml
 			if ($_product && !isset(self::$_productIdsFlushed[$_product->getId()])) {
 				self::$_productIdsFlushed[$_product->getId()] = true;
 				
-				Mage::helper('bolt/cache')->refreshProduct($_product, true);
+				Mage::helper('bolt/cache_queue')->refreshProduct($_product, true);
 			}
 		}
 
@@ -207,7 +207,7 @@ class Fishpig_Bolt_Model_Observer_Adminhtml
 	public function cmsPageSaveAfterObserver(Varien_Event_Observer $observer)
 	{
 		if ($this->_initAutoRefresh('cms_page_save_after')) {
-			$helper = Mage::helper('bolt/cache')->refreshCmsPage(
+			$helper = Mage::helper('bolt/cache_queue')->refreshCmsPage(
 				$observer->getEvent()->getObject()
 			);
 		}
@@ -223,8 +223,11 @@ class Fishpig_Bolt_Model_Observer_Adminhtml
 	 */
 	protected function _initAutoRefresh($key)
 	{
-		return /*$this->isBolt() && */Mage::getStoreConfigFlag('bolt/autorefresh/' . $key)
-			&& !Mage::helper('bolt')->isApiRequest();
+		return $this->isBolt() 
+			&& (int)Mage::app()->getCacheInstance()->canUse('bolt')
+			&& Mage::getStoreConfigFlag('bolt/autorefresh/' . $key);
+		
+			/*&& !Mage::helper('bolt')->isApiRequest();*/
 	}
 	
 	/**

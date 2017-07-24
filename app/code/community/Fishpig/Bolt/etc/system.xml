@@ -162,6 +162,7 @@
             			</blocks>
             		</fields>
             	</holepunch>
+            	<!--
             	<ajax_cache>
             		<label>Ajax Cache</label>
             		<sort_order>5</sort_order>
@@ -190,14 +191,22 @@
             			</allowed_modules>
             		</fields>
             	</ajax_cache>
+            	-->
             	<autorefresh>
             		<label>Auto-Refresh</label>
             		<sort_order>11</sort_order>
             		<show_in_default>1</show_in_default>
             		<show_in_website>1</show_in_website>
             		<show_in_store>1</show_in_store>
-            		<expanded>1</expanded>
+            		<comment>The auto-refresh system uses the Magento CRON. Ensure that your Magento CRON is running to use this system. Alternatively you can add shell/bolt-flush.php to your CRON.</comment>
             		<fields>
+									<cron_settings>
+										<label>Crontab Settings</label>
+										<frontend_type>text</frontend_type>
+										<sort_order>6</sort_order>
+										<comment><![CDATA[*/5 * * * * for every 5 minutes. <a href="http://www.crontab-generator.org/" target="_blank">Help</a>]]></comment>
+										<show_in_default>1</show_in_default>
+									</cron_settings>
             			<catalog_product_save_after>
             				<label>Product</label>
             				<frontend_type>select</frontend_type>

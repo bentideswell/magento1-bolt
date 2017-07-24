@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Fishpig_Bolt>
-			<version>2.2.0.43</version>
+			<version>2.2.1.1</version>
 		</Fishpig_Bolt>
 	</modules>
 	<global>
@@ -236,6 +236,18 @@
 			</adminhtml>
 		</routers>
 	</admin>
+	<crontab>
+		<jobs>
+			<bolt_cron>
+				<schedule>
+					<config_path>bolt/autorefresh/cron_settings</config_path>
+				</schedule>
+				<run>
+					<model>bolt/cron::flushCacheQueue</model>
+				</run>
+			</bolt_cron>
+		</jobs>
+	</crontab>
 	<default>
 		<bolt>
 			<settings>
@@ -253,6 +265,7 @@
 				<cache>1</cache>
 			</holepunch>
 			<autorefresh>
+				<cron_settings>*/5 * * * *</cron_settings>
 				<catalog_product_save_after>1</catalog_product_save_after>
 				<catalog_category_save_after>1</catalog_category_save_after>
 				<cataloginventory_stock_item_save_after>0</cataloginventory_stock_item_save_after>

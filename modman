@@ -1,7 +1,8 @@
-bolt.php																				bolt.php
-app/etc/modules/Fishpig__Bolt.xml									app/etc/modules/Fishpig__Bolt.xml
-app/code/community/Fishpig/Bolt										app/code/community/Fishpig/Bolt
-lib/Fishpig/Bolt																	lib/Fishpig/Bolt
-var/connect/Fishpig_Bolt.xml												var/connect/Fishpig_Bolt.xml
-app/design/adminhtml/default/default/layout/bolt.xml		app/design/adminhtml/default/default/layout/bolt.xml
+bolt.php																							bolt.php
+app/etc/modules/Fishpig__Bolt.xml											app/etc/modules/Fishpig__Bolt.xml
+app/code/community/Fishpig/Bolt												app/code/community/Fishpig/Bolt
+app/design/adminhtml/default/default/layout/bolt.xml	app/design/adminhtml/default/default/layout/bolt.xml
 app/design/adminhtml/default/default/template/bolt		app/design/adminhtml/default/default/template/bolt
+lib/Fishpig/Bolt																			lib/Fishpig/Bolt
+shell/bolt-flush.php																	shell/bolt-flush.php
+var/connect/Fishpig_Bolt.xml													var/connect/Fishpig_Bolt.xml
