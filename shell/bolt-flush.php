@@ -2,12 +2,36 @@
 /*
  *
  */
-
 	ini_set('display_errors', 1);
 	error_reporting(E_ALL);
+	set_time_limit(0);
+
+	// This is required incase extension is installed using modman
+	// Would usually use dirname(__DIR__) however is this file in a symlink
+	// This will point to the parent directory of the actual file and not the symlink
+	$dirsToTry = array(
+		getcwd(), 					// Calling from the Magento directory
+		dirname(getcwd()), 	// Calling from the shell directory
+		__DIR__, 						// Calling from the Magento directory
+		dirname(__DIR__), 	// Calling from the shell directory
+	);
+
+	$ds = DIRECTORY_SEPARATOR;
 	
-	include(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php');
-	umask(0);
-	Mage::app();
+	foreach($dirsToTry as $dir) {
+		$appMageFile = $dir . $ds . 'app' . $ds . 'Mage.php';
+		
+		if (is_file($appMageFile)) {
+			include($appMageFile);
+			umask(0);
+			Mage::app();
+			break;
+		}
+	}
 	
+	if (!class_exists('Mage')) {
+		echo 'Unable to find Magento installation.';
+		exit;
+	}
+
 	Mage::helper('bolt/cache_queue')->flush();

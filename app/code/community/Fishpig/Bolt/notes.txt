@@ -1,11 +1,17 @@
 /**
  * @category Fishpig
  * @package Fishpig_Bolt
- * @license http://fishpig.co.uk/license.txt
+ * @url https://fishpig.co.uk/magento/extensions/full-page-cache/
  * @author Ben Tideswell <ben@fishpig.co.uk>
  */
 
 CHANGELOG
+- 25/07/2017 - v2.2.1.2
+- Added improvements to the queueing system for the auto flush cache.
+
+- 24/07/2017 - v2.2.1.0
+- Moved the auto refresh cache system to a queue system that triggers via the CRON. You can run this manually via shell/bolt-flush.php
+
 - 06/06/2017 - v2.2.0.37
 - Added WordPress plugin to auto refresh cache for blog posts.
 

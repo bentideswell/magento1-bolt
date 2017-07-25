@@ -23,18 +23,21 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 				$storeIds = array($storeIds);
 			}
 
-			$useragents = array('ua_default', 'ua_mobile', 'ua_tablet');
 			$protocols = array('http', 'https');
 			
 			foreach($storeIds as $storeId) {
-				foreach($useragents as $useragent) {
+				$userAgents =  Mage::getStoreConfigFlag('bolt/advanced/multiple_themes', $storeId)
+					? array('ua_default', 'ua_mobile', 'ua_tablet')
+					: array('ua_default');
+					
+				foreach($userAgents as $userAgent) {
 					foreach($protocols as $protocol) {
-						call_user_func(array($_boltApp, 'delete'), (int)$storeId, $useragent, $protocol, $url, $subpages);
+						call_user_func(array($_boltApp, 'delete'), (int)$storeId, $userAgent, $protocol, $url, $subpages);
 					}
 				}
 			}
 		}
-		
+
 		return $this;
 	}
 
@@ -134,36 +137,27 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 
 		$select = $db->select()
 			->distinct()
-			->from(array('e' => $resource->getTableName('catalog/category')), 'path')
+			->from(array('e' => $resource->getTableName('catalog/category')), 'entity_id')
+			->where('level > ?', 1)
 			->join(
-				array('p' => $resource->getTableName('catalog_category_product')),
+				array('p' => $resource->getTableName('catalog_category_product_index')),
 				'p.category_id = e.entity_id',
 				null
 			);
 		
 		if (is_array($productIds)) {
-			$select->where('p.product_id IN (?)', $productIds);
+			if (count($productIds) > 1) {
+				$select->where('p.product_id IN (?)', $productIds);
+			}
+			else {
+				$select->where('p.product_id=?', array_shift($productIds));
+			}
 		}
 		else {
 			$select->where('p.product_id=?', $productIds);
 		}
-
-		$categoryIds = array();
 		
-		if ($results = $db->fetchCol($select)) {
-			foreach($results as $result) {
-				$parts = explode('/', trim($result, '/'));
-				
-				if (count($parts) > 2) {
-					array_shift($parts);
-					array_shift($parts);
-					
-					$categoryIds += $parts;
-				}
-			}
-		}
-		
-		return array_unique($categoryIds);
+		return $db->fetchCol($select);
 	}
 	
 	/**

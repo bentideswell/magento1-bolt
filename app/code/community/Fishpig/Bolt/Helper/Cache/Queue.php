@@ -79,6 +79,8 @@ class Fishpig_Bolt_Helper_Cache_Queue extends Mage_Core_Helper_Abstract
 			}
 		}
 		
+		@unlink($logFile);
+
 		return $this;
 	}
 
