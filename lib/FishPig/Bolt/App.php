@@ -395,7 +395,9 @@ class Fishpig_Bolt_App
 	 */
 	static public function canLoadCachedRequest()
 	{
+		
 		return (call_user_func(array(self::getHolePunch(), 'isEnabled')) ||  (!self::hasCartItems() && !self::isCustomerLoggedIn()))
+			&& !self::isDisabledCustomerGroup()
 			&& !self::hasMessages()
 			&& !self::$_isChangingStore
 			&& (self::canCacheFirstRequest() || count($_COOKIE) > 0)
@@ -635,9 +637,11 @@ class Fishpig_Bolt_App
 			self::$_isChangingStore = $_GET['___store'] !== call_user_func(array($sessionAdapter, 'getData'), 'core/store_code');
 			// Changing store via the query string
 		}
-		else if (is_array(($store =self::getStoreByCode(call_user_func(array($sessionAdapter, 'getData'), 'core/store_code'))))) {
+#		else if (is_array(($store =self::getStoreByCode(call_user_func(array($sessionAdapter, 'getData'), 'core/store_code'))))) {
+#			print_r($store);exit;
+#						echo __LINE__;exit;
 			// Loaded store via the session
-		}
+#		}
 		else {
 			// Load through environment variables or just load default
 			$code = isset($_SERVER['MAGE_RUN_CODE']) ? $_SERVER['MAGE_RUN_CODE'] : '';
@@ -654,7 +658,7 @@ class Fishpig_Bolt_App
 				$store = self::getStoreByCode($code);
 			}
 			else if ($type === 'website') {
-				$store =self::getStoreByWebsiteCode($code);
+				$store = self::getStoreByWebsiteCode($code);
 			}
 		}
 			
@@ -856,7 +860,27 @@ class Fishpig_Bolt_App
 	{
 		return call_user_func(array(self::getSession(), 'getData'), 'customer_base/id') || call_user_func(array(self::getSession(), 'getData'), 'core/is_logged_in');
 	}
-	
+
+	/**
+	 * Determine if the current customer group is disabled
+	 *
+	 * @return bool
+	 */
+	static public function isDisabledCustomerGroup()
+	{
+		if (0 === (int)self::getConfig('advanced/disabled_customer_groups_enabled')) {
+			return false;
+		}
+
+		if ($disabledCustomerGroupIds = trim(self::getConfig('advanced/disabled_customer_groups'), ',')) {
+			if (($customerGroupId = (int)call_user_func(array(self::getSession(), 'getData'), 'core/customer_group_id')) > 0) {
+				return in_array($customerGroupId, explode(',', $disabledCustomerGroupIds));
+			}
+		}
+		
+		return false;
+	}
+
 	/**
 	 * Determine whether there are any messages
 	 *

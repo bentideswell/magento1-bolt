@@ -22,24 +22,23 @@
             		<show_in_website>1</show_in_website>
             		<show_in_store>1</show_in_store>
             		<fields>
-						<enabled>
-            				<label>Enabled</label>
-            				<sort_order>0</sort_order>
-            				<frontend_type>select</frontend_type>
-							<source_model>adminhtml/system_config_source_yesno</source_model>
+									<enabled>
+										<label>Enabled</label>
+										<sort_order>0</sort_order>
+										<frontend_type>select</frontend_type>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
             				<show_in_store>1</show_in_store>
-						</enabled>
+									</enabled>
             			<disable_if>
             				<label>Disable</label>
-							<frontend_type>multiselect</frontend_type>
-							<source_model>bolt/system_config_source_conditions</source_model>
+										<frontend_type>multiselect</frontend_type>
+										<source_model>bolt/system_config_source_conditions</source_model>
             				<sort_order>2</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
             				<show_in_store>1</show_in_store>
-            				<depends><enabled>1</enabled></depends>
             			</disable_if>
             			<lifetime>
             				<label>Expiry - TTL</label>
@@ -54,7 +53,7 @@
             				<comment>If yes, cache content will be compressed. Refresh Bolt cache after changing this option.</comment>
             				<sort_order>11</sort_order>
             				<frontend_type>select</frontend_type>
-							<source_model>adminhtml/system_config_source_yesno</source_model>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
             				<show_in_store>1</show_in_store>
@@ -70,8 +69,8 @@
             		<fields>
             			<allowed_modules>
             				<label>Cachable Modules</label>
-							<frontend_type>multiselect</frontend_type>
-							<source_model>bolt/system_config_source_module</source_model>
+										<frontend_type>multiselect</frontend_type>
+										<source_model>bolt/system_config_source_module</source_model>
             				<sort_order>1</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
@@ -80,8 +79,8 @@
             			<multiple_themes>
             				<label>Multiple Themes</label>
             				<comment>If you have a different theme for mobiles or tablets, select yes. If you use a responsive theme, select No.</comment>
-							<frontend_type>select</frontend_type>
-							<source_model>adminhtml/system_config_source_yesno</source_model>
+										<frontend_type>select</frontend_type>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
             				<sort_order>4</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
@@ -90,9 +89,9 @@
             			<cookies>
             				<label>Cookies</label>
             				<tooltip>The 'currency' cookie is added by default.</tooltip> 
-							<frontend_model>bolt/system_config_form_field_cookies</frontend_model>
-							<backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
-							<frontend_type>text</frontend_type>
+										<frontend_model>bolt/system_config_form_field_cookies</frontend_model>
+										<backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+										<frontend_type>text</frontend_type>
             				<sort_order>6</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
@@ -100,10 +99,10 @@
             			</cookies>
             			<excluded_parameters>
             				<label>Parameters to Exclude</label>
-							<tooltip>The following paramters are added by default: ___store, ___from_store, isAjax, utm_source, utm_medium, utm_term, utm_content, utm_campaign.</tooltip>
+										<tooltip>The following paramters are added by default: ___store, ___from_store, isAjax, utm_source, utm_medium, utm_term, utm_content, utm_campaign.</tooltip>
             				<sort_order>16</sort_order>
-							<frontend_model>bolt/system_config_form_field_param</frontend_model>
-							<backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+										<frontend_model>bolt/system_config_form_field_param</frontend_model>
+										<backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
             				<show_in_store>1</show_in_store>
@@ -114,13 +113,34 @@
 &nbsp; /^checkout\/.*$/'<br/>
 &nbsp; /^customer\/.*$/'<br/>
 &nbsp; /^api\/.*$/]]></tooltip>
-							<frontend_model>bolt/system_config_form_field_uri</frontend_model>
-							<backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+										<frontend_model>bolt/system_config_form_field_uri</frontend_model>
+										<backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
             				<sort_order>21</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
             				<show_in_store>1</show_in_store>
             			</excluded_uris>
+									<disabled_customer_groups_enabled>
+										<label>Disable by Customer Group</label>
+            				<comment>Disable Bolt for specific customer groups.</comment>
+										<sort_order>31</sort_order>
+										<frontend_type>select</frontend_type>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
+            				<show_in_default>1</show_in_default>
+            				<show_in_website>1</show_in_website>
+            				<show_in_store>1</show_in_store>
+									</disabled_customer_groups_enabled>
+									<disabled_customer_groups>
+										<label>Disabled Customer Groups</label>
+            				<comment>Selected customer groups will always have Bolt cache disabled</comment>
+										<sort_order>32</sort_order>
+										<frontend_type>multiselect</frontend_type>
+										<source_model>bolt/system_config_source_customer_group</source_model>
+            				<show_in_default>1</show_in_default>
+            				<show_in_website>1</show_in_website>
+            				<show_in_store>1</show_in_store>
+            				<depends><disabled_customer_groups_enabled>1</disabled_customer_groups_enabled></depends>
+									</disabled_customer_groups>
             		</fields>
             	</advanced>
             	<holepunch>
@@ -134,26 +154,26 @@
             			<enabled>
             				<label>Enabled</label>
             				<frontend_type>select</frontend_type>
-							<source_model>adminhtml/system_config_source_yesno</source_model>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
             				<sort_order>1</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
             				<show_in_store>1</show_in_store>
             			</enabled>
-						<cache>
+									<cache>
             				<label>Cache</label>
             				<comment>If enabled, hole punched content will be cached.</comment>
             				<sort_order>6</sort_order>
             				<frontend_type>select</frontend_type>
-							<source_model>adminhtml/system_config_source_yesno</source_model>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
             				<show_in_store>1</show_in_store>
-						</cache>
+									</cache>
             			<blocks>
             				<label>Blocks</label>
-							<frontend_model>bolt/system_config_form_field_block</frontend_model>
-							<backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+										<frontend_model>bolt/system_config_form_field_block</frontend_model>
+										<backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
             				<sort_order>11</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
@@ -210,7 +230,7 @@
             			<catalog_product_save_after>
             				<label>Product</label>
             				<frontend_type>select</frontend_type>
-							<source_model>adminhtml/system_config_source_yesno</source_model>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
             				<sort_order>11</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
@@ -219,7 +239,7 @@
             			<catalog_category_save_after>
             				<label>Category</label>
             				<frontend_type>select</frontend_type>
-							<source_model>adminhtml/system_config_source_yesno</source_model>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
             				<sort_order>11</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
@@ -228,7 +248,7 @@
             			<cataloginventory_stock_item_save_after>
             				<label>Stock Item</label>
             				<frontend_type>select</frontend_type>
-							<source_model>adminhtml/system_config_source_yesno</source_model>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
             				<sort_order>16</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
@@ -237,7 +257,7 @@
             			<cms_page_save_after>
             				<label>CMS Page</label>
             				<frontend_type>select</frontend_type>
-							<source_model>adminhtml/system_config_source_yesno</source_model>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
             				<sort_order>21</sort_order>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>

@@ -1,11 +1,14 @@
 /**
- * @category Fishpig
- * @package Fishpig_Bolt
- * @url https://fishpig.co.uk/magento/extensions/full-page-cache/
- * @author Ben Tideswell <ben@fishpig.co.uk>
+ * @category 	Fishpig
+ * @package  	Fishpig_Bolt
+ * @url 			https://fishpig.co.uk/magento/extensions/full-page-cache/
+ * @author 		Ben Tideswell <ben@fishpig.co.uk>
  */
 
 CHANGELOG
+- 31/08/2017 - v2.2.1.4
+- Added option to disable Bolt cache by customer group. This is disabled by default but can be easily enabled via the configuration.
+
 - 25/07/2017 - v2.2.1.2
 - Added improvements to the queueing system for the auto flush cache.
 
