@@ -544,8 +544,10 @@ class Fishpig_Bolt_App
 	{
 		$uri = trim($uri, '/');
 
-		if (strlen(FISHPIG_BOLT_DIR) > strlen($_SERVER['DOCUMENT_ROOT']))	 {
-			$subDirectory = substr(FISHPIG_BOLT_DIR, strlen($_SERVER['DOCUMENT_ROOT']) + 1);
+		$boltDir = rtrim(self::getDir(''), DIRECTORY_SEPARATOR);
+
+		if (strlen($boltDir) > strlen($_SERVER['DOCUMENT_ROOT']))	 {
+			$subDirectory = substr($boltDir, strlen($_SERVER['DOCUMENT_ROOT']) + 1);
 			
 			if (strpos($uri, $subDirectory) === 0) {
 				$uri = substr($uri, strlen($subDirectory) + 1);
@@ -1098,8 +1100,7 @@ class Fishpig_Bolt_App
 	 */
 	static public function getDir($dir)
 	{
-		return (defined('FISHPIG_BOLT_DIR') ? FISHPIG_BOLT_DIR : BP)
-			. DIRECTORY_SEPARATOR . $dir;
+		return (defined('FISHPIG_BOLT_DIR') ? FISHPIG_BOLT_DIR : getcwd()) . DIRECTORY_SEPARATOR . $dir;
 	}
 	
 	/**

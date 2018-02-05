@@ -6,6 +6,9 @@
  */
 
 CHANGELOG
+- 05/01/2018 - v2.2.1.7
+- Fixed following error in logs: Notice: Use of undefined constant FISHPIG_BOLT_DIR - assumed 'FISHPIG_BOLT_DIR'
+
 - 31/08/2017 - v2.2.1.4
 - Added option to disable Bolt cache by customer group. This is disabled by default but can be easily enabled via the configuration.
 

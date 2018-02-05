@@ -1,5 +1,5 @@
 <_>
-   <form_key>NrZXp9FjVv62XC6T</form_key>
+   <form_key>ffs8tzQF4Onx5igZ</form_key>
    <name>Fishpig_Bolt</name>
    <channel>community</channel>
    <version_ids>
@@ -9,7 +9,7 @@
    <description>Lightning fast full page cache for Magento CE and EE. Bolt works without any additional software and is compatible with shared hosts, virtual hosts and dedicated servers. It includes an easily configurable hole punching system (which is also cached) making it the fastest FPC available for Magento.</description>
    <license>FishPig EULA</license>
    <license_uri>http://fishpig.co.uk/license.txt</license_uri>
-   <version>2.2.1.6</version>
+   <version>2.2.1.7</version>
    <stability>stable</stability>
    <notes>Please see https://fishpig.co.uk/magento/extensions/full-page-cache/#changelog</notes>
    <authors>
@@ -40,7 +40,7 @@
             <max/>
          </max>
          <files>
-            <files>                                                                                                                                       </files>
+            <files>                                                                                                                                        </files>
          </files>
       </package>
       <extension>
