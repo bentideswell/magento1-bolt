@@ -22,6 +22,7 @@
 		$appMageFile = $dir . $ds . 'app' . $ds . 'Mage.php';
 		
 		if (is_file($appMageFile)) {
+			chdir($dir);
 			include($appMageFile);
 			umask(0);
 			Mage::app();
