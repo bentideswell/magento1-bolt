@@ -5,4 +5,3 @@ app/design/adminhtml/default/default/layout/bolt.xml	app/design/adminhtml/defaul
 app/design/adminhtml/default/default/template/bolt		app/design/adminhtml/default/default/template/bolt
 lib/Fishpig/Bolt																			lib/Fishpig/Bolt
 shell/bolt-flush.php																	shell/bolt-flush.php
-var/connect/Fishpig_Bolt.xml													var/connect/Fishpig_Bolt.xml
