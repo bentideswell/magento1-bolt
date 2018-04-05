@@ -25,7 +25,7 @@ foreach($dirsToTry as $dir) {
 		chdir($dir);
 		include($appMageFile);
 		umask(0);
-		Mage::app('admin');
+		Mage::app();
 		break;
 	}
 }
