@@ -24,7 +24,7 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 			}
 
 			$protocols = array('http', 'https');
-			
+
 			foreach($storeIds as $storeId) {
 				$userAgents =  Mage::getStoreConfigFlag('bolt/advanced/multiple_themes', $storeId)
 					? array('ua_default', 'ua_mobile', 'ua_tablet')
