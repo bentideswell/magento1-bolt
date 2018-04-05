@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Fishpig_Bolt>
-			<version>2.2.1.15</version>
+			<version>2.2.1.16</version>
 		</Fishpig_Bolt>
 	</modules>
 	<global>
@@ -266,6 +266,7 @@
 			</holepunch>
 			<autorefresh>
 				<cron_settings>*/5 * * * *</cron_settings>
+				<cron_use_magento>1</cron_use_magento>
 				<catalog_product_save_after>1</catalog_product_save_after>
 				<catalog_category_save_after>1</catalog_category_save_after>
 				<cataloginventory_stock_item_save_after>0</cataloginventory_stock_item_save_after>
@@ -273,21 +274,4 @@
 			</autorefresh>
 		</bolt>
 	</default>
-	<fishpig>
-		<injection>
-			<Fishpig_Magento_License>
-				<Fishpig_Bolt>
-					<Helper_License>
-						<ignore />
-					</Helper_License>
-				</Fishpig_Bolt>
-			</Fishpig_Magento_License>
-		</injection>
-		<encode>
-			<helper_license>app/code/community/Fishpig/Bolt/Helper/License.php</helper_license>
-			<adminhtml_controller>app/code/community/Fishpig/Bolt/controllers/Adminhtml/Cache/BoltController.php</adminhtml_controller>
-			<lib_app>lib/Fishpig/Bolt/App.php</lib_app>
-			<lib_holepunch>lib/Fishpig/Bolt/HolePunch.php</lib_holepunch>
-		</encode>
-	</fishpig>
 </config>
