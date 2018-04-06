@@ -105,10 +105,6 @@ class Fishpig_Bolt_HolePunch
 
 		if ($cacheEnabled && ($holes = call_user_func(array(Fishpig_Bolt_App::getCache(), 'load'), $cacheKey)) !== false) {
 			$holes = unserialize($holes);
-			
-foreach($holes as $k => $v) {
-	$holes[$k] .= '<h1>CACHED ' . $cacheKey . '</h1>';
-}
 		}
 		else {
 			try {
