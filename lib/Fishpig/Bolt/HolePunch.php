@@ -105,6 +105,10 @@ class Fishpig_Bolt_HolePunch
 
 		if ($cacheEnabled && ($holes = call_user_func(array(Fishpig_Bolt_App::getCache(), 'load'), $cacheKey)) !== false) {
 			$holes = unserialize($holes);
+			
+foreach($holes as $k => $v) {
+	$holes[$k] .= '<h1>CACHED ' . $cacheKey . '</h1>';
+}
 		}
 		else {
 			try {
@@ -179,20 +183,46 @@ class Fishpig_Bolt_HolePunch
 		}
 		
 		$sessionAdapter = Fishpig_Bolt_App::getSession();
+		$cacheKeyFieldNames = self::_getCacheKeyFields();
+		
+		$cacheKeyFieldValues = array(
+			'base' => 'holepunch',	
+			'customer_id' => (int)call_user_func(array($sessionAdapter, 'getData'), 'customer_base/id'),
+			'cart_item_count' => (int)call_user_func(array($sessionAdapter, 'getData'), 'core/cart_item_count'),
+			'quote_hash' => call_user_func(array($sessionAdapter, 'getData'), 'core/quote_hash'),
+		);
+		
+		$cacheKeyFieldValues['is_logged_in'] = (int)($cacheKeyFieldValues['customer_id'] > 0);
+		
+		foreach($cacheKeyFieldValues as $field => $value) {
+			if (!in_array($field, $cacheKeyFieldNames)) {
+				unset($cacheKeyFieldValues[$field]);
+			}
+		}
 
 		self::$_cacheKey = Fishpig_Bolt_App::generateCacheKey(
 			(int)Fishpig_Bolt_App::getConfig('store_id'), 
 			Fishpig_Bolt_App::getUserAgentGroup(),
 			Fishpig_Bolt_App::getRequestProtocol(),
-			implode(DIRECTORY_SEPARATOR, array(
-				'base' => 'holepunch',	
-				'customer_id' => (int)call_user_func(array($sessionAdapter, 'getData'), 'customer_base/id'),
-//				'cart_item_count' => (int)call_user_func(array($sessionAdapter, 'getData'), 'core/cart_item_count'),
-				'quote_hash' => call_user_func(array($sessionAdapter, 'getData'), 'core/quote_hash'),
-			))
+			'HolePunch-'  . md5(implode(DIRECTORY_SEPARATOR, $cacheKeyFieldValues))
 		);
 		
 		return self::$_cacheKey;
+	}
+	
+	/*
+	 *
+	 * @return array
+	 */
+	static protected function _getCacheKeyFields()
+	{
+		if (!($cacheKeyFields = trim(Fishpig_Bolt_App::getConfig('holepunch/cache_key_fields'), ','))) {
+			$cacheKeyFields = 'is_logged_in,customer_id,quote_hash';
+		}
+		
+		$cacheKeyFields = explode(',', $cacheKeyFields);
+		
+		return $cacheKeyFields;
 	}
 	
 	/**

@@ -6,6 +6,9 @@
  */
 
 CHANGELOG
+- 06-04-2018 - 2.2.2.0
+- Added option to specify cache key
+
 - 05/01/2018 - v2.2.1.7
 - Fixed following error in logs: Notice: Use of undefined constant FISHPIG_BOLT_DIR - assumed 'FISHPIG_BOLT_DIR'
 

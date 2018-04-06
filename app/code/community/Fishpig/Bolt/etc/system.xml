@@ -160,16 +160,6 @@
             				<show_in_website>1</show_in_website>
             				<show_in_store>1</show_in_store>
             			</enabled>
-									<cache>
-            				<label>Cache</label>
-            				<comment>If enabled, hole punched content will be cached.</comment>
-            				<sort_order>6</sort_order>
-            				<frontend_type>select</frontend_type>
-										<source_model>adminhtml/system_config_source_yesno</source_model>
-            				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
-            				<show_in_store>1</show_in_store>
-									</cache>
             			<blocks>
             				<label>Blocks</label>
 										<frontend_model>bolt/system_config_form_field_block</frontend_model>
@@ -180,38 +170,30 @@
             				<show_in_store>1</show_in_store>
             				<depends><enabled>1</enabled></depends>
             			</blocks>
-            		</fields>
-            	</holepunch>
-            	<!--
-            	<ajax_cache>
-            		<label>Ajax Cache</label>
-            		<sort_order>5</sort_order>
-            		<show_in_default>1</show_in_default>
-            		<show_in_website>1</show_in_website>
-            		<show_in_store>1</show_in_store>
-            		<fields>
-            			<enabled>
-            				<label>Enabled</label>
+									<cache>
+            				<label>Cache</label>
+            				<comment>If enabled, hole punched content will be cached.</comment>
+            				<sort_order>21</sort_order>
             				<frontend_type>select</frontend_type>
-							<source_model>adminhtml/system_config_source_yesno</source_model>
-            				<sort_order>1</sort_order>
-            				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
-            				<show_in_store>1</show_in_store>
-            			</enabled>
-            			<allowed_modules>
-            				<label>Cachable Modules</label>
-							<frontend_type>multiselect</frontend_type>
-							<source_model>bolt/system_config_source_module</source_model>
-            				<sort_order>1</sort_order>
+										<source_model>adminhtml/system_config_source_yesno</source_model>
             				<show_in_default>1</show_in_default>
             				<show_in_website>1</show_in_website>
             				<show_in_store>1</show_in_store>
             				<depends><enabled>1</enabled></depends>
-            			</allowed_modules>
+									</cache>
+            			<cache_key_fields>
+            				<label>Cache Key Fields</label>
+            				<comment>Default is Is Logged In, Customer ID and Quote Hash</comment>
+            				<frontend_type>multiselect</frontend_type>
+										<source_model>bolt/system_config_source_holepunch_cachekey</source_model>
+            				<sort_order>31</sort_order>
+            				<show_in_default>1</show_in_default>
+            				<show_in_website>1</show_in_website>
+            				<show_in_store>1</show_in_store>
+            				<depends><cache>1</cache></depends>
+            			</cache_key_fields>
             		</fields>
-            	</ajax_cache>
-            	-->
+            	</holepunch>
             	<autorefresh>
             		<label>Auto-Refresh</label>
             		<sort_order>11</sort_order>
