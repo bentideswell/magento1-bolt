@@ -88,8 +88,9 @@ class Fishpig_Bolt_Helper_Data extends Mage_Core_Helper_Abstract
 				'session_save_path' =>(string)Mage::getConfig()->getNode('global/session_save_path'),
 				'session_cache_limiter' => (string)Mage::getConfig()->getNode('global/session_cache_limiter'),
 				'cache_type' => (string)Mage::getConfig()->getNode('global/cache/backend'),
+				'domain_policy' => $this->_getDomainPolicy(),
 			);
-			
+
 			if ($container['session_save'] === 'files') {
 				$container['var_session_path'] = (string)Mage::getSingleton('core/session')->getSessionSavePath();
 			}
@@ -267,5 +268,23 @@ class Fishpig_Bolt_Helper_Data extends Mage_Core_Helper_Abstract
 		Mage::app()->getCacheInstance()->invalidateType('bolt');
 		
 		return $this;
+	}
+	
+	/*
+	 * Get the domain policy header value
+	 *
+	 * @return string
+	 */
+	protected function _getDomainPolicy()
+	{
+		if ($coreDir = Mage::getModuleDir('etc', 'Mage_Core')) {
+			$domainPolicyFile = dirname($coreDir) . DS . 'Model' . DS . 'Domainpolicy.php';
+			
+			if (is_file($domainPolicyFile)) {
+				return Mage::getSingleton('core/domainpolicy')->getFrontendPolicy();
+			}
+		}
+		
+		return '';
 	}
 }
