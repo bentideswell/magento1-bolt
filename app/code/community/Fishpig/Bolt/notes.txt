@@ -7,6 +7,8 @@
 
 CHANGELOG
 
+- 24-04-2018 - 2.2.2.3
+- Improved flushing of file cache.
 
 - 09-04-2018 - 2.2.2.2
 - Added support for X-Frame-Options for cache hits. The value for this is taken from the Magento configuration.

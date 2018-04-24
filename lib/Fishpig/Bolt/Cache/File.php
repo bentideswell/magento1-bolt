@@ -79,10 +79,56 @@ class Fishpig_Bolt_Cache_File extends Fishpig_Bolt_Cache_Abstract
 	 */
 	static public function flush()
 	{
-		self::_recursivelyDelete(self::_getPath(''));
+		$cacheDir = rtrim(self::_getPath(''), DIRECTORY_SEPARATOR);
+		
+		if (!is_dir($cacheDir)) {
+			return;
+		}
+		
+		try {
+			$canShellExec = is_callable('shell_exec') && false === stripos(ini_get('disable_functions'), 'shell_exec');
+
+			if (!$canShellExec) {
+				throw new Exception('shell_exec does not exist or cannot be called.');
+			}
+
+			$tempName = tempnam(dirname($cacheDir), 'cache-');
+			
+			unlink($tempName);
+
+			self::_shellExec('mv -f ' . $cacheDir . ' ' . $tempName);
+			
+			if (!is_dir($tempName) && is_dir($cacheDir)) {
+				throw new Exception('Cannot delete via shell_exec. Use standard PHP deletion.');
+			}
+			
+			self::_shellExec('rm -rf ' . $tempName);
+			
+			clearstatcache(true, $tempName);
+			clearstatcache(true, $cacheDir);
+			
+			if (is_dir($tempName)) {
+				$cacheDir = $tempName;
+
+				throw new Exception('Deletion failed.');
+			}
+		}
+		catch (Exception $e) {
+			self::_recursivelyDelete($cacheDir);
+		}
 	}
 
-	
+	/*
+	 * shell_exec wrapper
+	 *
+	 * @param  string $cmd
+	 * @return void
+	 */
+	protected static function _shellExec($cmd)
+	{
+		return trim(shell_exec($cmd));
+	}
+
 	/**
 	 * Determine whether $id has been cached
 	 *
