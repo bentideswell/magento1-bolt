@@ -4,11 +4,7 @@
  * @package		Fishpig_Bolt
  * @license		http://fishpig.co.uk/license.txt
  * @author		Ben Tideswell <help@fishpig.co.uk>
- */
- 
-/**
- * Hole punch class
- *
+ * @Obfuscate
  */
 class Fishpig_Bolt_HolePunch
 {
