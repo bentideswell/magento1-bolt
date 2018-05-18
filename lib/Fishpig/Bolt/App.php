@@ -88,6 +88,13 @@ class Fishpig_Bolt_App
 	 */
 	static protected $_cacheKey = null;
 	
+	/*
+	 *
+	 *
+	 */
+	static protected $_baseDir;
+	
+	
 	/**
 	 * An array of excluded URIs
 	 *
@@ -1103,9 +1110,32 @@ class Fishpig_Bolt_App
 	 * @param string $dir
 	 * @return string
 	 */
-	static public function getDir($dir)
+	static public function getDir($extra)
 	{
-		return (defined('FISHPIG_BOLT_DIR') ? FISHPIG_BOLT_DIR : getcwd()) . DIRECTORY_SEPARATOR . $dir;
+		if (self::$_baseDir === null) {
+			if (defined('FISHPIG_BOLT_DIR')) {
+				self::$_baseDir = FISHPIG_BOLT_DIR;
+			}
+			else {
+				$dirsToTry = array(
+					dirname(dirname(dirname(__DIR__))),
+					isset($_SERVER['PHP_SELF']) ? dirname(dirname($_SERVER['PHP_SELF'])) : '/',
+					getcwd(),
+					dirname(getcwd()),
+				);
+				
+				foreach($dirsToTry as $dir) {
+					if (trim($dir, DIRECTORY_SEPARATOR) !== '') {
+						if (is_file($dir . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Mage.php')) {
+							self::$_baseDir = $dir;
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		return self::$_baseDir . DIRECTORY_SEPARATOR . $extra;
 	}
 	
 	/**

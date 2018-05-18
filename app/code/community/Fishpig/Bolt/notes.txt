@@ -6,6 +6,8 @@
  */
 
 CHANGELOG
+- 18-05-2018 - 2.2.2.5
+- Fix for issue including file when running via the CRON.
 
 - 24-04-2018 - 2.2.2.3
 - Improved flushing of file cache.

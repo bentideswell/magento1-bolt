@@ -14,19 +14,23 @@ $dirsToTry = array(
 	dirname(__DIR__), 	// Calling from the shell directory
 	getcwd(), 					// Calling from the Magento directory
 	dirname(getcwd()), 	// Calling from the shell directory
+	isset($_SERVER['PHP_SELF']) ? dirname(dirname($_SERVER['PHP_SELF'])) : '/',
 );
 
-$ds = DIRECTORY_SEPARATOR;
+$ds  = DIRECTORY_SEPARATOR;
+$cwd = getcwd();
 
 foreach($dirsToTry as $dir) {
-	$appMageFile = $dir . $ds . 'app' . $ds . 'Mage.php';
-	
-	if (is_file($appMageFile)) {
-		chdir($dir);
-		include($appMageFile);
-		umask(0);
-		Mage::app();
-		break;
+	if (rtrim($dir, DIRECTORY_SEPARATOR) !== '') {
+		$appMageFile = $dir . $ds . 'app' . $ds . 'Mage.php';
+		
+		if (is_file($appMageFile)) {
+			chdir($dir);
+			include($appMageFile);
+			umask(0);
+			Mage::app();
+			break;
+		}
 	}
 }
 
@@ -36,3 +40,5 @@ if (!class_exists('Mage')) {
 }
 
 Mage::helper('bolt/cache_queue')->flush();
+
+chdir($cwd);
