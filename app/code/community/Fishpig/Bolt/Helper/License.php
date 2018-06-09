@@ -1,19 +1,17 @@
 <?php
-/**
- * @category Fishpig
- * @package Fishpig_Bolt
- * @license http://fishpig.co.uk/license.txt
- * @author Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-	
-class Fishpig_Bolt_Helper_License extends Mage_Core_Helper_Abstract
+namespace FishPig\Bolt\Helper;
+
+class License
 {
 	/**
 	 * Module name used for licensing
 	 *
 	 * @const var string
 	 */
-	const MODULE_NAME = 'Fishpig_Bolt';
+	const MODULE_NAME = 'Bolt';
 	
 	/**
 	 * Module name used for licensing
@@ -80,11 +78,13 @@ class Fishpig_Bolt_Helper_License extends Mage_Core_Helper_Abstract
 	 * @return string
 	 */
 	public function getLicenseValidationUrl($format = '')
-	{
+	{		
+		$adminUrl = parse_url(\Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Backend\Helper\Data')->getHomePageUrl(), PHP_URL_HOST);
+
 		return 'http://license.fishpig.co.uk/2.0/'
 			. $this->getLicenseCode() 
 			. '/' 
-			. base64_encode(parse_url(Mage::getUrl('', array('_store' => 0, '_nosid' => true)),  PHP_URL_HOST))
+			. base64_encode($adminUrl)
 			. '/'
 			. ($format !== '' ? $format : '');
 	}
