@@ -35,6 +35,18 @@ class Fishpig_Bolt_Model_Observer_Frontend
 			return $this;
 		}
 
+		$request = Mage::app()->getRequest();
+		$correctFormKey = Mage::getSingleton('core/session')->getFormKey();
+
+		if ($request->getPost('form_key')) {
+			$request->setPost('form_key', $correctFormKey);
+		}
+		
+		if ($request->getParam('form_key')) {
+			$request->setParam('form_key', $correctFormKey);			
+		}
+
+		/*
 		if (Mage::app()->getRequest()->getMethod() === 'POST') {
 			Mage::app()->getRequest()->setPost(
 				$this->_fixFormKey(Mage::app()->getRequest()->getPost())
@@ -53,7 +65,7 @@ class Fishpig_Bolt_Model_Observer_Frontend
 				}
 			}
 		}
-
+		*/
 		return $this;
 	}
 	

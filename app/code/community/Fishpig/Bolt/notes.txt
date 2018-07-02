@@ -6,6 +6,10 @@
  */
 
 CHANGELOG
+
+- 02/07/2018 - 2.2.2.8
+- Improved form key correction.
+
 - 18-05-2018 - 2.2.2.5
 - Fix for issue including file when running via the CRON.
 
