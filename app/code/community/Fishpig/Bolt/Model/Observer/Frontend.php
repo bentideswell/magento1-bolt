@@ -1,10 +1,9 @@
 <?php
-/**
+/*
  * @category	Fishpig
  * @package		Fishpig_Bolt
  * @license		http://fishpig.co.uk/license.txt
  * @author		Ben Tideswell <help@fishpig.co.uk>
- * @Obfuscate
  */
 
 class Fishpig_Bolt_Model_Observer_Frontend
