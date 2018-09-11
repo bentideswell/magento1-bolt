@@ -7,6 +7,9 @@
 
 CHANGELOG
 
+- 11/09/2018 - 2.3.0.0
+- Switched cache queue flushing system to a DB system rather than a text log file system. This should stop the CRON issues.
+
 - 02/07/2018 - 2.2.2.8
 - Improved form key correction.
 
