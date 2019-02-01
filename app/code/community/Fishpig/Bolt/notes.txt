@@ -6,6 +6,12 @@
  */
 
 CHANGELOG
+- 01/02/2019 - 2.3.0.3
+- Improved Bolt FPC Cleaner plugin for WordPress. Requires Fishpig_Wordpress
+
+- 01/02/2019 - 2.3.0.2
+- Fixed bug that caused ___refresh=bolt to show up when printing out Magento current URL
+
 - 01/02/2019 - 2.3.0.1
 - Fixed bug with automatic product flushing.
 

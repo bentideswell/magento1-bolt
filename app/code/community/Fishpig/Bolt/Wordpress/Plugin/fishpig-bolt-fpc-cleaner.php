@@ -5,7 +5,7 @@
  * Description: Flushes the Bolt FPC cache for posts when saving them
  * Author: FishPig
  * Author URI:  https://fishpig.co.uk/
- * Version: 1.0.0
+ * Version: 1.0.2
  * Text Domain: fishpig
  */
 
@@ -48,8 +48,23 @@ class FishPig_Bolt_FPC_Cleaner
 	**/
 	public function flushPostById($postId)
 	{
-		if ($permalink = get_permalink($postId)) {
-			return $this->flushUrl($permalink);
+		$postUrls = array(
+			get_permalink($postId),
+			home_url(),
+		);
+		
+		if ($categories = wp_get_post_categories($postId)) {
+			foreach($categories as $category) {
+				$postUrls[] = get_category_link($category);
+			}
+		}
+
+		if ($postUrls) {
+			foreach($postUrls as $postUrl) {
+				$this->flushUrl($postUrl);
+			}
+			
+			return true;
 		}
 		
 		return false;
@@ -61,7 +76,9 @@ class FishPig_Bolt_FPC_Cleaner
 	public function flushUrl($url)
 	{
 		try {
-			if (!($response = wp_remote_get($url . '?___refresh=bolt'))) {
+			$this->log($url);
+
+			if (!($response = wp_remote_get($url . '?___refresh=bolt&___refresh_subpages=1'))) {
 				throw new Exception('Unable to flush ' . $url);
 			}
 
