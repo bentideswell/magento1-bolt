@@ -6,6 +6,8 @@
  */
 
 CHANGELOG
+- 01/02/2019 - 2.3.0.1
+- Fixed bug with automatic product flushing.
 
 - 11/09/2018 - 2.3.0.0
 - Switched cache queue flushing system to a DB system rather than a text log file system. This should stop the CRON issues.

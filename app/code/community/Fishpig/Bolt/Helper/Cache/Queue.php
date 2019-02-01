@@ -96,10 +96,13 @@ class Fishpig_Bolt_Helper_Cache_Queue extends Mage_Core_Helper_Abstract
 			return $this;
 		}
 
-		return $this->_saveCacheFlushRequest(
-			$product->getId(), 
-			($includeCategories ? self::TYPE_PRODUCT_CATEGORIES : self::TYPE_PRODUCT)
-		);
+		$this->_saveCacheFlushRequest($product->getId(), self::TYPE_PRODUCT);
+		
+		if ($includeCategories) {
+			$this->_saveCacheFlushRequest($product->getId(), self::TYPE_PRODUCT_CATEGORIES);
+		}
+		
+		return $this;
 	}
 	
 	/**
