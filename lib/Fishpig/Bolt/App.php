@@ -140,6 +140,7 @@ class Fishpig_Bolt_App
 	static protected $_cookiesForCacheKey = array(
 		'currency',
 		'store',
+		'user_allowed_save_cookie',
 	);
 	
 	/**

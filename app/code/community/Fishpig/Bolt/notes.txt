@@ -6,6 +6,9 @@
  */
 
 CHANGELOG
+- 25/02/2019 - 2.3.0.4
+- Added fix for Cookie Restriction Mode
+
 - 01/02/2019 - 2.3.0.3
 - Improved Bolt FPC Cleaner plugin for WordPress. Requires Fishpig_Wordpress
 
