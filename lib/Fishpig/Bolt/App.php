@@ -33,6 +33,7 @@ class Fishpig_Bolt_App
 	static protected $_customCacheTypes = array(
 		'memcache' => 'Memcached',
 		'Cm_Cache_Backend_Redis' => 'Redis',
+		'Mage_Cache_Backend_Redis' => 'Redis',
 	);
 	
 	/**

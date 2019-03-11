@@ -95,7 +95,7 @@ class Fishpig_Bolt_Helper_Data extends Mage_Core_Helper_Abstract
 				$container['var_session_path'] = (string)Mage::getSingleton('core/session')->getSessionSavePath();
 			}
 			
-			if ($container['cache_type'] === 'Cm_Cache_Backend_Redis') {
+			if (in_array($container['cache_type'], array('Cm_Cache_Backend_Redis', 'Mage_Cache_Backend_Redis'))) {
 				$container['cache_options'] = (array)Mage::getConfig()->getNode('global/cache/backend_options')->asArray();
 			}
 			else if  ($container['cache_type']) {
