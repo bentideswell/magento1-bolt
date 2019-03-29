@@ -554,14 +554,16 @@ class Fishpig_Bolt_App
 
 		$boltDir = rtrim(self::getDir(''), DIRECTORY_SEPARATOR);
 
-		if (strlen($boltDir) > strlen($_SERVER['DOCUMENT_ROOT']))	 {
-			$subDirectory = substr($boltDir, strlen($_SERVER['DOCUMENT_ROOT']) + 1);
-			
-			if (strpos($uri, $subDirectory) === 0) {
-				$uri = substr($uri, strlen($subDirectory) + 1);
+		if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+			if (strlen($boltDir) > strlen($_SERVER['DOCUMENT_ROOT']))	 {
+				$subDirectory = substr($boltDir, strlen($_SERVER['DOCUMENT_ROOT']) + 1);
+				
+				if (strpos($uri, $subDirectory) === 0) {
+					$uri = substr($uri, strlen($subDirectory) + 1);
+				}
 			}
 		}
-		
+
 		// Trim the filename from the URI
 		if (strpos($uri, 'bolt.php') === 0) {
 			$uri = ltrim(substr($uri, strlen('bolt.php')), '/');

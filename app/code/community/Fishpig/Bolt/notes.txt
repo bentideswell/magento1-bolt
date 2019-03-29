@@ -6,6 +6,9 @@
  */
 
 CHANGELOG
+- 29/03/2019 - 2.3.0.6
+- Fixed issue for undefined index DOCUMENT_ROOT when running via CLI.
+
 - 25/02/2019 - 2.3.0.4
 - Added fix for Cookie Restriction Mode
 
