@@ -554,11 +554,11 @@ class Fishpig_Bolt_App
 
 		$boltDir = rtrim(self::getDir(''), DIRECTORY_SEPARATOR);
 
-		if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+		if (!empty($_SERVER['DOCUMENT_ROOT']) && $uri) {
 			if (strlen($boltDir) > strlen($_SERVER['DOCUMENT_ROOT']))	 {
 				$subDirectory = substr($boltDir, strlen($_SERVER['DOCUMENT_ROOT']) + 1);
 				
-				if (strpos($uri, $subDirectory) === 0) {
+				if ($subDirectory && strpos($uri, $subDirectory) === 0) {
 					$uri = substr($uri, strlen($subDirectory) + 1);
 				}
 			}
