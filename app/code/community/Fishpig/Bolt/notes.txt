@@ -6,6 +6,9 @@
  */
 
 CHANGELOG
+- 24/04/2019 - 2.3.0.8
+- Added fallback option for session DBs when Redis fails.
+
 - 29/03/2019 - 2.3.0.6
 - Fixed issue for undefined index DOCUMENT_ROOT when running via CLI.
 

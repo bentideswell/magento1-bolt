@@ -5,7 +5,6 @@
  * @license		http://fishpig.co.uk/license.txt
  * @author		Ben Tideswell <help@fishpig.co.uk>
  */
-
 class Fishpig_Bolt_Session_Redis extends Fishpig_Bolt_Session_Abstract
 {
 	/**
@@ -13,7 +12,7 @@ class Fishpig_Bolt_Session_Redis extends Fishpig_Bolt_Session_Abstract
 	 *
 	 * @const string
 	 */
-    const SESSION_PREFIX = 'sess_';
+  const SESSION_PREFIX = 'sess_';
     
 	/**
 	 * Store the Memcache adapter
@@ -42,7 +41,7 @@ class Fishpig_Bolt_Session_Redis extends Fishpig_Bolt_Session_Abstract
 			self::getRedisPassword()
 		);
 
-        self::$_redis->setCloseOnDestruct(false);
+    self::$_redis->setCloseOnDestruct(false);
 
 		Fishpig_Bolt_Session_Abstract::_initSessionData('Redis');
 	}
@@ -87,6 +86,52 @@ class Fishpig_Bolt_Session_Redis extends Fishpig_Bolt_Session_Abstract
 	 */
 	static protected function _getRawSessionData()
 	{
+  	// If Redis connection has failed and Magento using DB as fallback for session
+  	// This code connects to the DB and gets session data from there
+    if (!self::$_redis->isConnected()) {
+      try {
+        $localFile = Fishpig_Bolt_App::getDir('app/etc/local.xml');
+        
+        if (!is_file($localFile)) {
+          throw new Exception('Unable to load local.xml. This is required to connect to DB to get Redis fallback (DB).');
+        }
+        
+        $localXml  = simplexml_load_file($localFile);      
+        $conn      = $localXml->global->resources->default_setup->connection;
+        $mysqli    = new mysqli((string)$conn->host, (string)$conn->username, (string)$conn->password, (string)$conn->dbname);
+        $tableName = preg_replace('/[^a-z0-9_]{1}/i', '', $localXml->global->resources->db->table_prefix . 'core_session');
+        
+        foreach(Fishpig_Bolt_Session_Abstract::$_potentialCookieNames as $cookieName) {
+          if (!isset($_COOKIE[$cookieName])) {
+            continue;
+          }
+          
+          $sessionId      = preg_replace('/[^a-z0-9]/', '', $_COOKIE[$cookieName]);
+          $sessionExpires = (int)mktime();
+
+          $query = "SELECT session_data FROM {$tableName} WHERE session_id LIKE '%{$sessionId}' AND session_expires > {$sessionExpires}";
+
+          if (($result = $mysqli->query($query)) && ($row = $result->fetch_assoc())) {
+            $data = self::_decodeData($row['session_data']);
+
+            if (strpos($data, 'is_bolt') !== false) {
+              $result->free();
+              $mysqli->close();
+              
+              return $data;	
+            }
+          }
+        }
+      }
+      catch (Exception $e) {}
+
+      !empty($result) && $result->free();
+      !empty($mysqli) && $mysqli->close();
+      
+      return false;
+    }
+    
+    // Redis is connected so lets get data from there
 		if ($dbNum = (int)Fishpig_Bolt_App::getConfig('session_redis/db')) {
 			self::$_redis->select($dbNum);
 		}
@@ -109,20 +154,20 @@ class Fishpig_Bolt_Session_Redis extends Fishpig_Bolt_Session_Abstract
 		return $data !== NULL ? $data : false;
 	}
 
-    /**
-	  * Decode the data
-	  *
-	  * @param string $data
-	  * @return string
-	  */
-    static public function _decodeData($data)
-    {
-        switch (substr($data, 0, 4)) {
-            case ':sn:': return snappy_uncompress(substr($data, 4));
-            case ':lz:': return lzf_decompress(substr($data, 4));
-            case ':gz:': return gzuncompress(substr($data, 4));
-        }
-
-        return $data;
+  /**
+   * Decode the data
+   *
+   * @param string $data
+   * @return string
+   */
+  static public function _decodeData($data)
+  {
+    switch (substr($data, 0, 4)) {
+      case ':sn:': return snappy_uncompress(substr($data, 4));
+      case ':lz:': return lzf_decompress(substr($data, 4));
+      case ':gz:': return gzuncompress(substr($data, 4));
     }
+
+    return $data;
+  }
 }
