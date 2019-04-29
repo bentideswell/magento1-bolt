@@ -6,6 +6,9 @@
  */
 
 CHANGELOG
+- 29/04/2019 - 2.3.0.9
+- Fixed Redis session type bug
+
 - 24/04/2019 - 2.3.0.8
 - Added fallback option for session DBs when Redis fails.
 
