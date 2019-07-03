@@ -237,6 +237,8 @@ class Fishpig_Bolt_App
 	 */
 	static protected function _returningControlToMagento($method = null)
 	{
+    self::cleanForceRefresh();
+
 		if (self::isDebug() && $method) {
 			$e = new Exception();
 			$trace = $e->getTrace();
@@ -708,18 +710,28 @@ class Fishpig_Bolt_App
 				$_SERVER['REQUEST_URI'], 
 				isset($_GET['___refresh_subpages']) ? $_GET['___refresh_subpages'] : false
 			);
-			
-			// Ensure when printing out current URL, these keys aren't included
-			$keys = array('___refresh', '___refresh_ua', '___refresh_protocol', '___refresh_subpages');
-			
-			foreach($keys as $key) {
-				if (isset($_GET[$key])) {
-					unset($_GET[$key]);
-				}
-			}
+
+      self::cleanForceRefresh();
 		}
 	}
 
+  /**
+   *
+   *
+   *
+   */
+  static protected function cleanForceRefresh()
+  {
+		// Ensure when printing out current URL, these keys aren't included
+		$keys = array('___refresh', '___refresh_ua', '___refresh_protocol', '___refresh_subpages');
+		
+		foreach($keys as $key) {
+			if (isset($_GET[$key])) {
+				unset($_GET[$key]);
+			}
+		}
+  }
+  
 	/**
 	 * Retrieve a store by a website code
 	 *
