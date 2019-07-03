@@ -5,7 +5,7 @@
  * Description: Flushes the Bolt FPC cache for posts when saving them
  * Author: FishPig
  * Author URI:  https://fishpig.co.uk/
- * Version: 1.0.2
+ * Version: 1.1.0
  * Text Domain: fishpig
  */
 
@@ -40,7 +40,14 @@ class FishPig_Bolt_FPC_Cleaner
 	**/
 	protected function __construct()
 	{
-		add_action('save_post', array($this, 'flushPostById'));
+    $canRun = !defined('FISHPIG_BOLT_FPC_CLEANER_DISABLE')
+      && (!empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
+      && (empty($_GET['action']) || $_GET['action'] !== 'edit');
+
+
+    if ($canRun) {
+      add_action('save_post', array($this, 'flushPostById'));
+    }
 	}	
 	
 	/**
