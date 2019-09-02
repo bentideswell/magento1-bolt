@@ -6,6 +6,8 @@
  */
 
 CHANGELOG
+- 02/09/2019 - 2.3.0.12
+- Added fix for when Opti is disabled via config.
 
 - 03/07/2019 - 2.3.0.10
 - Updated FPC Cleaner plugin for WordPress

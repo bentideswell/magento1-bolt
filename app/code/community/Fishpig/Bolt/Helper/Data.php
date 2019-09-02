@@ -78,7 +78,8 @@ class Fishpig_Bolt_Helper_Data extends Mage_Core_Helper_Abstract
 		if (Mage::app()->useCache('bolt')) {
 			// If 2.0.0.12 of Opti is installed, we can move hole punched JS to the bottom
 			$isOptiInstalled = (string)Mage::app()->getConfig()->getNode('modules/Fishpig_Opti/active') === 'true'
-				&& version_compare((string)Mage::app()->getConfig()->getNode('modules/Fishpig_Opti/version'), '2.0.0.12', '>=');
+				&& version_compare((string)Mage::app()->getConfig()->getNode('modules/Fishpig_Opti/version'), '2.0.0.12', '>=')
+				&& Mage::helper('opti')->isEnabled();
 
 			$container = array(
 				'websites' => array(),
