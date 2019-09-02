@@ -142,7 +142,10 @@ class Fishpig_Bolt_HolePunch
 			if ($moveJsToBottom && strpos($data, '<script') !== false) {
 				if (preg_match_all('/<script[^>]{0,}>.*<\/script>/Us', $data, $matches)) {
 					$data = str_replace($matches[0], '', $data);
-					$scripts += $matches[0];
+
+					foreach($matches[0] as $script) {
+  					$scripts[] = $script;
+  				}
 				}
 			}
 			
