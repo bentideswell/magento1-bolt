@@ -133,6 +133,8 @@ class Fishpig_Bolt_Model_Observer_Adminhtml
 				if (!is_dir($cacheDir)) {
 					return $helper->__("Cache directory (%s) is not writable.", $cacheDir);
 				}
+				
+				@rmdir($cacheDir);
 			}
 		}
 		

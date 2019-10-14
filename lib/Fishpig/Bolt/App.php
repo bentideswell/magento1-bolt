@@ -205,11 +205,13 @@ class Fishpig_Bolt_App
 
 		self::handleForceRefresh();
 
-		if (self::getCacheKey() === false) {
+		if (($cacheKey = self::getCacheKey()) === false) {
 			return self::_returningControlToMagento('getCacheKey');
 		}
 
 		if (!self::canLoadCachedRequest()) {
+  		self::log(' SKIP: ' . $cacheKey);
+  		
 			return self::_returningControlToMagento('canLoadCachedRequest');
 		}
 
@@ -217,10 +219,14 @@ class Fishpig_Bolt_App
 			return self::_returningControlToMagento('getCache');
 		}
 
-		if (($html = call_user_func(array($cacheAdapter, 'load'), self::getCacheKey())) === false) {
+		if (($html = call_user_func(array($cacheAdapter, 'load'), $cacheKey)) === false) {
+  		self::log(' MISS: ' . $cacheKey);
+  		
 			return;
 		}	
 
+    self::log('  HIT: ' . $cacheKey);
+    
 		if (!($isPunchingHoles = Fishpig_Bolt_HolePunch::punchHoles($html))) {
 			if (strpos($html, '<!--BOLT') !== false) {
 				$html = preg_replace('/(<!--[\/]{0,1}BOLT[^>]{1,}-->)/U', '', $html);
@@ -429,6 +435,8 @@ class Fishpig_Bolt_App
 	static public function delete($storeId, $useragent, $protocol, $uri, $subpages = true)
 	{
 		if (($cacheKey = self::generateCacheKey($storeId, $useragent, $protocol, $uri)) !== false) {
+  		self::log('FLUSH: ' . $cacheKey);
+
 			call_user_func(array(self::getCache(), 'delete'), $cacheKey, $subpages);
 		}
 	}
@@ -1233,11 +1241,15 @@ class Fishpig_Bolt_App
 	 * @param string $msg
 	 * @return void
 	 */
-	static public function log($msg)
+	static public function log($msg, $file = 'bolt.log')
 	{
-		$file = self::getDir('var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR) . 'bolt.log';
-
-		file_put_contents($file, (is_file($file) ? file_get_contents($file) . "\n" : '') . $msg);		
+    if ((int)self::getConfig('settings/logging') === 1) {
+      file_put_contents(
+        self::getDir('var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR) . $file, 
+        $msg . PHP_EOL, 
+        FILE_APPEND
+      );
+    }
 	}
 	
 	/**

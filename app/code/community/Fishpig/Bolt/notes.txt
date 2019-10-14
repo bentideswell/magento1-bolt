@@ -6,6 +6,9 @@
  */
 
 CHANGELOG
+- 14/10/2019 - 2.3.0.16
+- Added logging
+
 - 02/09/2019 - 2.3.0.14
 - Added fix for when Opti is disabled via config.
 
