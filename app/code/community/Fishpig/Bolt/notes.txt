@@ -6,6 +6,9 @@
  */
 
 CHANGELOG
+- 17/10/2019 - 2.3.0.17
+- Added fix for auto flushing for Magento EE.
+
 - 14/10/2019 - 2.3.0.16
 - Added logging
 

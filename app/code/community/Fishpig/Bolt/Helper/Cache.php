@@ -159,7 +159,7 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 		
 		return $db->fetchCol($select);
 	}
-	
+
 	/**
 	 * Retrieve all product URL's categorised by store for a specific product
 	 *
@@ -171,21 +171,29 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 		$resource = Mage::getSingleton('core/resource');
 		$db = $resource->getConnection('core_read');
 		
+		$table = $this->isEnterprise() ? $resource->getTableName('enterprise_url_rewrite') : $resource->getTableName('core/url_rewrite');
+
 		$select = $db->select()
 			->distinct()
-			->from($resource->getTableName('core/url_rewrite'), array('request_path', 'store_ids' => new Zend_Db_Expr('GROUP_CONCAT(store_id)')))
+			->from($table, array('request_path', 'store_ids' => new Zend_Db_Expr('GROUP_CONCAT(store_id)')))
 			->where('request_path <> ?', '')
-			->where('options IS NULL')
+			->where('target_path LIKE ?', 'catalog/product/view/id/%')
 			->group('request_path');
 			
+		if (!$this->isEnterprise()) {
+  		$select->where('options IS NULL');
+    }
+		
+		$productIdField = $this->isEnterprise() ? 'value_id' : 'product_id';
+
 		if (is_array($productIds)) {
-			$select->where('product_id IN (?)', $productIds);
+			$select->where($productIdField . ' IN (?)', $productIds);
 		}
 		else {
-			$select->where('product_id=?', $productIds);
+			$select->where($productIdField . '=?', $productIds);
 		}
 
-		return $db->fetchPairs($select);
+    return $db->fetchPairs($select);
 	}
 
 	/**
@@ -199,20 +207,28 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 		$resource = Mage::getSingleton('core/resource');
 		$db = $resource->getConnection('core_read');
 		
+		$table = $this->isEnterprise() ? $resource->getTableName('enterprise_url_rewrite') : $resource->getTableName('core/url_rewrite');
+		
 		$select = $db->select()
 			->distinct()
-			->from($resource->getTableName('core/url_rewrite'), array('request_path', 'store_ids' => new Zend_Db_Expr('GROUP_CONCAT(store_id)')))
+			->from($table, array('request_path', 'store_ids' => new Zend_Db_Expr('GROUP_CONCAT(store_id)')))
 			->where('request_path <> ?', '')
-			->where('options IS NULL')
+			->where('target_path LIKE ?', 'catalog/category/view/id/%')
 			->group('request_path');
+
+		if (!$this->isEnterprise()) {
+  		$select->where('options IS NULL');
+    }
+    
+		$categoryIdField = $this->isEnterprise() ? 'value_id' : 'product_id';
 		
 		if (is_array($categoryId)) {
-			$select->where('category_id IN (?)', $categoryId);
+			$select->where($categoryIdField . ' IN (?)', $categoryId);
 		}
 		else {
-			$select->where('category_id=?', $categoryId);
+			$select->where($categoryIdField . '=?', $categoryId);
 		}
-			
+
 		return $db->fetchPairs($select);
 	}
 
@@ -277,5 +293,13 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 	{
 		return 'Fishpig_Bolt_App';
 		return defined('FISHPIG_BOLT') ? 'Fishpig_Bolt_App' : false;
+	}
+	
+	/**
+   * @return bool
+   */
+	protected function isEnterprise()
+	{
+    return Mage::EDITION_ENTERPRISE === Mage::getEdition();
 	}
 }
