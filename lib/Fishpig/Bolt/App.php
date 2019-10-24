@@ -396,6 +396,8 @@ class Fishpig_Bolt_App
 			return false;
 		}
 		
+		self::log(' SAVE: ' . $cacheKey);
+		
 		return call_user_func(
 			array($cacheAdapter, 'save'), 
 			$cacheKey,
