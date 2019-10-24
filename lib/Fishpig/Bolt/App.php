@@ -395,9 +395,7 @@ class Fishpig_Bolt_App
 		if ((bool)$transport->getCanCache() === false) {
 			return false;
 		}
-
-    self::log(' SAVE: ' . $cacheKey);
-echo __LINE__;exit;  		
+		
 		return call_user_func(
 			array($cacheAdapter, 'save'), 
 			$cacheKey,
