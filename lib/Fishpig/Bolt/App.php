@@ -1250,11 +1250,13 @@ class Fishpig_Bolt_App
 	static public function log($msg, $file = 'bolt.log')
 	{
     if ((int)self::getConfig('settings/logging') === 1) {
-      file_put_contents(
-        self::getDir('var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR) . $file, 
-        $msg . PHP_EOL, 
-        FILE_APPEND
-      );
+      $logDir = self::getDir('var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR);
+      
+      if (!is_dir($logDir)) {
+        @mkdir($logDir);
+      }
+      
+      @file_put_contents($logDir . $file, $msg . PHP_EOL, FILE_APPEND);
     }
 	}
 	
