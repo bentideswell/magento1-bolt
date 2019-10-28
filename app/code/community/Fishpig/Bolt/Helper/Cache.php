@@ -240,12 +240,14 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 	 */
 	protected function _getAllCmsPageUrls(Mage_Cms_Model_Page $page)
 	{
-		if (!$page->getStores()) {
-			return false;
+  	$page->load($page->getId());
+
+		if (!$storeIds = $page->getStores()) {
+  		if (!$storeIds = $page->getStoreId()) {
+        return false;
+  		}
 		}
 
-		$storeIds = $page->getStores();
-			
 		if (count($storeIds) === 1 && $storeIds[0] == 0) {
 			$storeIds = array_keys(Mage::app()->getStores());
 		}

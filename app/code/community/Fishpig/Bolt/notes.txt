@@ -6,6 +6,9 @@
  */
 
 CHANGELOG
+- 28/10/2019 - 2.3.0.22
+- Fixed issue with refreshing CMS pages in EE.
+
 - 17/10/2019 - 2.3.0.17
 - Added fix for auto flushing for Magento EE.
 
