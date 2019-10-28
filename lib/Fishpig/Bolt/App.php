@@ -838,11 +838,15 @@ class Fishpig_Bolt_App
 	 */
 	static public function sendResponse($html, $areHolesPunched = false)
 	{
-		header('Content-Type: text/html; charset=utf-8');
+    header('Content-Type: text/html; charset=UTF-8');
 		header("Pragma: no-cache");
 		header("Cache-Control: no-cache, must-revalidate, no-store, post-check=0, pre-check=0");
 		header('X-Cached-By: Bolt' . ($areHolesPunched ? ' + HolePunch' : ''));
 		
+    if (function_exists('fishpig_bolt_send_response')) {
+      fishpig_bolt_send_response($html, $areHolesPunched);
+    }
+
 		if ($domainPolicy = self::getConfig('domain_policy')) {
 			header('X-Frame-Options: ' . $domainPolicy);
 		}
