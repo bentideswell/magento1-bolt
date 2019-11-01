@@ -8,6 +8,16 @@
 
 class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 {	
+  /**
+   * @var array
+   */
+  protected $urlSuffixes = array();
+  
+  /**
+   * @var array
+   */
+  protected $allStoreIds;
+  
 	/**
 	 * Refresh a URL
 	 *
@@ -32,6 +42,8 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 					
 				foreach($userAgents as $userAgent) {
 					foreach($protocols as $protocol) {
+  					$this->log(' FLUSH: ' . $storeId . '/' . $userAgent . '/' . $protocol . '/' . $url);
+  					
 						call_user_func(array($_boltApp, 'delete'), (int)$storeId, $userAgent, $protocol, $url, $subpages);
 					}
 				}
@@ -60,15 +72,35 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 
 			if ($productUris = $this->_getAllProductUrls($productIds)) {
 				foreach($productUris as $uri => $storeIdString) {
-					$this->refreshUrl($uri, explode(',', $storeIdString));
+  				$storeIds = explode(',', $storeIdString);
+
+          if ($this->isEnterprise() && strpos($storeIdString, '0') !== false) {
+            $storeIds = $this->_getAllStoreIds();
+          }
+          
+          if ($storeIds) {
+    				foreach($storeIds as $storeId) {
+    					$this->refreshUrl($uri . ($this->isEnterprise() ? $this->_getUrlSuffix('product', $storeId) : ''), $storeId);
+    				}
+  				}
 				}
 			}
 			
 			if ($includeCategories) {
 				if ($categoryIds = $this->_getAllProductCategoryIds($productIds)) {					
 					if ($categoryUris = $this->_getAllCategoryUrls($categoryIds)) {
-						foreach($categoryUris as $uri => $storeIdString) {
-							$this->refreshUrl($uri, explode(',', $storeIdString));
+						foreach($categoryUris as $uri => $storeIdString) {  						
+      				$storeIds = explode(',', $storeIdString);
+    
+              if ($this->isEnterprise() && strpos($storeIdString, '0') !== false) {
+                $storeIds = $this->_getAllStoreIds();
+              }
+
+              if ($storeIds) {
+                foreach($storeIds as $storeId) {
+                  $this->refreshUrl($uri . ($this->isEnterprise() ? $this->_getUrlSuffix('product', $storeId) : ''), $storeId);
+                }
+              }
 						}
 					}
 				}
@@ -89,7 +121,17 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 	{
 		if ($categoryUris = $this->_getAllCategoryUrls($category->getId())) {
 			foreach($categoryUris as $uri => $storeIdString) {
-				$this->refreshUrl($uri, explode(',', $storeIdString));
+				$storeIds = explode(',', $storeIdString);
+
+        if ($this->isEnterprise() && strpos($storeIdString, '0') !== false) {
+          $storeIds = $this->_getAllStoreIds();
+        }
+
+        if ($storeIds) {
+          foreach($storeIds as $storeId) {
+            $this->refreshUrl($uri . ($this->isEnterprise() ? $this->_getUrlSuffix('category', $storeId) : ''), $storeId);
+          }
+        }
 			}
 		}
 
@@ -177,21 +219,24 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 			->distinct()
 			->from($table, array('request_path', 'store_ids' => new Zend_Db_Expr('GROUP_CONCAT(store_id)')))
 			->where('request_path <> ?', '')
-			->where('target_path LIKE ?', 'catalog/product/view/id/%')
 			->group('request_path');
-			
-		if (!$this->isEnterprise()) {
-  		$select->where('options IS NULL');
-    }
-		
-		$productIdField = $this->isEnterprise() ? 'value_id' : 'product_id';
 
-		if (is_array($productIds)) {
-			$select->where($productIdField . ' IN (?)', $productIds);
-		}
-		else {
-			$select->where($productIdField . '=?', $productIds);
-		}
+    if (!$this->isEnterprise()) {
+  		$select->where('options IS NULL');
+      $select->where('target_path LIKE ?', 'catalog/product/view/id/%');
+      
+      is_array($productIds) ? $select->where('product_id IN (?)', $productIds) : $select->where('product_id=?', $productIds);
+    }
+    else {
+    	$targetPaths = array();
+  	
+      foreach((array)$productIds as $productId) {
+        $targetPaths[] = 'catalog/product/view/id/' . $productId;
+      }
+
+      $select->where('target_path IN (?)', $targetPaths);
+  		$select->where('is_system=?', 1);
+    }
 
     return $db->fetchPairs($select);
 	}
@@ -202,7 +247,7 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 	 * @param Mage_Catalog_Model_Product $product
 	 * @return false|array
 	 */
-	protected function _getAllCategoryUrls($categoryId)
+	protected function _getAllCategoryUrls($categoryIds)
 	{
 		$resource = Mage::getSingleton('core/resource');
 		$db = $resource->getConnection('core_read');
@@ -213,21 +258,24 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 			->distinct()
 			->from($table, array('request_path', 'store_ids' => new Zend_Db_Expr('GROUP_CONCAT(store_id)')))
 			->where('request_path <> ?', '')
-			->where('target_path LIKE ?', 'catalog/category/view/id/%')
 			->group('request_path');
 
 		if (!$this->isEnterprise()) {
   		$select->where('options IS NULL');
+      $select->where('target_path LIKE ?', 'catalog/category/view/id/%');
+
+      is_array($categoryIds) ? $select->where('product_id IN (?)', $categoryIds) : $select->where('product_id=?', $categoryIds);
     }
-    
-		$categoryIdField = $this->isEnterprise() ? 'value_id' : 'product_id';
-		
-		if (is_array($categoryId)) {
-			$select->where($categoryIdField . ' IN (?)', $categoryId);
-		}
-		else {
-			$select->where($categoryIdField . '=?', $categoryId);
-		}
+    else {
+    	$targetPaths = array();
+  	
+      foreach((array)$categoryIds as $categoryId) {
+        $targetPaths[] = 'catalog/category/view/id/' . $categoryId;
+      }
+
+      $select->where('target_path IN (?)', $targetPaths);
+  		$select->where('is_system=?', 1);
+    }
 
 		return $db->fetchPairs($select);
 	}
@@ -303,5 +351,54 @@ class Fishpig_Bolt_Helper_Cache extends Mage_Core_Helper_Abstract
 	protected function isEnterprise()
 	{
     return Mage::EDITION_ENTERPRISE === Mage::getEdition();
+	}
+	
+	/**
+   * @return string
+   */
+	protected function _getUrlSuffix($type, $storeId)
+	{
+  	if (!isset($this->urlSuffixes[$storeId])) {
+    	$this->urlSuffixes[$$storeId] = array();
+  	}
+
+  	if (!isset($this->urlSuffixes[$storeId][$type])) {
+    	$this->urlSuffixes[$storeId][$type] = rtrim('.' . Mage::getStoreConfig('catalog/seo/' . $type . '_url_suffix', $storeId), '.');
+    }
+    
+    return $this->urlSuffixes[$storeId][$type];
+	}
+	
+	/**
+   * @return array
+   */
+	protected function _getAllStoreIds()
+	{
+  	if (!$this->allStoreIds) {
+    	$this->allStoreIds = array();
+    	
+      foreach(Mage::app()->getStores() as $store) {
+        $this->allStoreIds[] = (int)$store->getId();
+      }
+  	}
+
+    return $this->allStoreIds;
+	}
+	
+	/**
+   * @param string $msg
+   * @return $this
+   */
+	public function log($msg)
+	{
+  	$logDir = Mage::getBaseDir('var') . DS . 'log';
+  	
+  	if (!is_dir($logDir)) {
+    	@mkdir($logDir);
+  	}
+  	
+    @file_put_contents($logDir . DS . 'bolt.log', $msg . PHP_EOL, FILE_APPEND);
+    
+    return $this;
 	}
 }
