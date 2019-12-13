@@ -192,7 +192,7 @@ class Fishpig_Bolt_Model_Observer_Adminhtml
 
 			if ($_product && !isset(self::$_productIdsFlushed[$_product->getId()])) {
 				self::$_productIdsFlushed[$_product->getId()] = true;
-				
+
 				Mage::helper('bolt/cache_queue')->refreshProduct($_product, true);
 			}
 		}
@@ -200,6 +200,36 @@ class Fishpig_Bolt_Model_Observer_Adminhtml
 		return $this;
 	}
 
+	/**
+	 * After an order, update products in cache
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return $this
+	 */
+    public function salesOrderPlaceAfterObserver(Varien_Event_Observer $observer)
+    {
+		if ($this->_initAutoRefresh('cataloginventory_stock_item_save_after')) {
+            $order = $observer->getEvent()->getOrder();
+            $products = array();
+            
+            foreach ($order->getItemsCollection() as $orderItem) {
+                if ($orderItem->getParentItemId()) {
+                    continue;
+                }
+                
+                $products[$orderItem->getProductId()] = $orderItem->getProduct();
+            }
+            
+            if (count($products) > 0) {
+                foreach($products as $product) {
+                    Mage::helper('bolt/cache_queue')->refreshProduct($product, true);
+                }
+            }
+        }
+        
+        return $this;
+    }
+    
 	/**
 	 * Automatically clean the CMS page cache
 	 *

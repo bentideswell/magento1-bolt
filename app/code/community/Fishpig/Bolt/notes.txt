@@ -1,11 +1,14 @@
 /**
  * @category 	Fishpig
  * @package  	Fishpig_Bolt
- * @url 			https://fishpig.co.uk/magento/extensions/full-page-cache/
+ * @url 		https://fishpig.co.uk/magento/extensions/full-page-cache/
  * @author 		Ben Tideswell <ben@fishpig.co.uk>
  */
 
 CHANGELOG
+- 13/12/2019 - 2.3.0.24
+- Added event after placing an order to flush product cache if stock item is enabled
+
 - 28/10/2019 - 2.3.0.22
 - Fixed issue with refreshing CMS pages in EE.
 
