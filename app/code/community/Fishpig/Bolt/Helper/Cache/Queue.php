@@ -146,15 +146,27 @@ class Fishpig_Bolt_Helper_Cache_Queue extends Mage_Core_Helper_Abstract
 		$this->ensureDbTableExists();
 
 		try {
-			Mage::getSingleton('core/resource')->getConnection('core_write')
-				->insert(
-					$this->getTableName(),
-					array(
-						'entity_id'   => $id,
-						'entity_type' => $type,
-						'created_at'  => now(),
-					)
-				);
+    		$resource = Mage::getSingleton('core/resource');
+    		$read = $resource->getConnection('core_read');
+    		
+            $createdAt = $read->fetchOne(
+                $read->select()->from($this->getTableName(), 'created_at')
+                    ->where('entity_id=?',(int)$id)
+                    ->where('entity_type=?', $type)
+                    ->limit(1)
+            );
+
+            if (!$createdAt) {
+    			$resource->getConnection('core_write')
+    				->insert(
+    					$this->getTableName(),
+    					array(
+    						'entity_id'   => $id,
+    						'entity_type' => $type,
+    						'created_at'  => now(),
+    					)
+    				);
+            }
 		}
 		catch (Exception $e) {
 			// Do nothing. Record already exists	
