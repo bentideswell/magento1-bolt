@@ -263,6 +263,10 @@ class Fishpig_Bolt_App
 	 */
 	static public function canTryBolt()
 	{
+    	if (PHP_SAPI === 'cli') {
+        	return false;
+    	}
+
 		if (isset($_COOKIE['no-cache']) || isset($_COOKIE['nocache'])) {
 			return false;
 		}
